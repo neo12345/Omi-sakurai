@@ -3,6 +3,7 @@ $(document).ready(function () {
         e.preventDefault();
         
         $('#error').html('');
+        $('#chart_div').html('');
         
         google.charts.setOnLoadCallback(drawChart);
     });
@@ -78,9 +79,14 @@ $(document).ready(function () {
             var date = x_axis.getDate();
             var month = x_axis.getMonth() + 1;
             
-            data.addRows([[x_axis, y_axis, 
-                '<div style = "width: 130px; height: 50px; padding-left: 10px; padding-top: 5px;">'
-                            + month + '月' + date + '日<br><b>' + y_axis + '万円</b></div>']]);
+            if ($("#select_opt").val() == 4 || $("#select_opt").val() == 5){
+                var tooltip = '<div style = "width: 130px; height: 50px; padding-left: 10px; padding-top: 5px;">'
+                            + month + '月' + date + '日<br><b>' + y_axis + '万円</b></div>';
+            } else {
+                var tooltip = '<div style = "width: 130px; height: 50px; padding-left: 10px; padding-top: 5px;">'
+                            + month + '月' + date + '日<br><b>' + y_axis + '</b></div>';
+            }
+            data.addRows([[x_axis, y_axis, tooltip]]);
         }
         // Set chart options
         var max = new Date(result[result.length - 1].x_axis);
@@ -98,7 +104,8 @@ $(document).ready(function () {
                     max: max,
                     min: min
                 }
-            }
+            },
+            pointSize: 10
         };
         
         // Instantiate and draw our chart, passing in some options.

@@ -5,7 +5,7 @@
         <li class="tab_off"><a href="/item/?md=list" title="物件一覧">物件一覧</a></li>
         <li class="tab_off"><a href="/item/?md=regist" title="物件登録">物件登録</a></li>
         <li class="tab_off"><a href="/item/?md=analysis" title="集計・解析">集計・解析</a></li>
-        <li class="tab_on"><a href="/item/?md=analysis_item" title="解析(物件)">解析(物件)</a></li>
+        <li class="tab_on"><a>解析(物件)</li>
 
       </ul>
     </div>
@@ -51,7 +51,7 @@
                                     <td><?php echo date('Y/m/d', strtotime($RS_history[$i]['date_regist'])); ?></td>
                                     <td><?php echo $RS_history[$i]['stat_name']; ?></td>
                                     <td><?php echo $RS_history[$i]['hist_price']; ?> 万円</td>
-                                    <td><?php //echo $RS_history[$i]['user_name'];    ?></td>
+                                    <td><?php echo $RS_history[$i]['user_name']; ?></td>
                                 </tr>
                             <?php } ?>
                         </table>
@@ -132,32 +132,59 @@
                             <td><?php echo date('Y年m月', strtotime($RS_item[0]['item_build']));?></td>
                             <th rowspan="3">設備</th>
                             <td rowspan="3">
-								ガス		：<?php echo $RS_fuel[0]['fuel_name']; ?><br>
-								上水道	：<?php echo $RS_water[0]['water_name']; ?><br>
-								下水道	：<?php echo $RS_sewer[0]['sewer_name']; ?>						
+								<?php 
+								for($i = 0; $i < count($RS_fuel); $i++) {
+									echo 'ガス	:';
+									echo $RS_fuel[$i]['fuel_name'];
+								}
+								
+								for($i = 0; $i < count($RS_water); $i++) {
+									echo '上水道	：';
+									echo $RS_water[$i]['water_name'];
+								}
+								
+								for($i = 0; $i < count($RS_sewer); $i++) {
+									echo '下水道	：';
+									echo $RS_sewer[$i]['sewer_name'];
+								}
+								?>					
 							</td>
                         </tr>
                         <tr>
                         	<th>間取り</th>
-                            <td><?php echo $RS_layout[0]['layout_name'];?></td>
+                            <td>
+								<?php
+									for($i = 0; $i < count($RS_layout); $i++) {
+										echo $RS_layout[$i]['layout_name'];
+									}
+								?>
+							</td>
                         </tr>
                         <tr>
                         	<th>構造</th>
-                            <td><?php echo $RS_structure[0]['struc_name'];?></td>
+                            <td>
+								<?php
+									for($i = 0; $i < count($RS_structure); $i++) {
+										echo $RS_structure[$i]['struc_name'];
+									}
+								?>
+							</td>
                         </tr>
                         <tr>
                         	<th>建ぺい率</th>
                             <td><?php echo $RS_item[0]['item_ratio_build'];?>%</td>
                             <th rowspan="2">交通</th>
                             <td rowspan="2">
-								<?php 
-									echo $RS_pubtrans[0]['pubtrans_name'];
-									echo ' 「';
-									echo $RS_stop[0]['stop_name'];
-									echo '」 駅まで';
-									echo $RS_transway[0]['transway_name'];
-									echo $RS_transtime[0]['transtime'];
-									echo '分';
+								<?php
+									for ($i = 0; $i < count($RS_pubtrans); $i++) {
+										echo $RS_pubtrans[0]['pubtrans_name'];
+										echo ' 「';
+										echo $RS_pubtrans[0]['stop_name'];
+										echo '」 駅まで';
+										echo $RS_pubtrans[0]['transway_name'];
+										echo $RS_pubtrans[0]['transtime'];
+										echo '分<br>';
+									} 
 								?>
 							</td>
                         </tr>
@@ -181,22 +208,28 @@
                             <td rowspan="3">
 								<?php 
 									if($RS_school_pri[0]) {
-										echo $RS_school_pri[0]['school_pri_name'];
-										echo '	: ';
-										echo $RS_item[0]['item_dist_pri'] . 'm';
-										echo '(' . $RS_item[0]['item_min_pri'] . '分）';
-										echo '<br>';
+										for($i = 0; $i < count($RS_school_pri); $i++) {
+											echo $RS_school_pri[0]['school_pri_name'];
+											echo '	: ';
+											echo $RS_item[0]['item_dist_pri'] . 'm';
+											echo '(' . $RS_item[0]['item_min_pri'] . '分）';
+											echo '<br>';
+										}
 									}
 									if($RS_school_jun[0]) {
-										echo $RS_school_jun[0]['school_jun_name'];
-										echo '	: ';
-										echo $RS_item[0]['item_dist_jun'] . 'm';
-										echo '(' . $RS_item[0]['item_min_jun'] . '分）';
-										echo '<br>';
+										for($i = 0; $i < count($RS_school_jun); $i++) {
+											echo $RS_school_jun[0]['school_jun_name'];
+											echo '	: ';
+											echo $RS_item[0]['item_dist_jun'] . 'm';
+											echo '(' . $RS_item[0]['item_min_jun'] . '分）';
+											echo '<br>';
+										}
 									}
 									if($RS_cat_schigh[0]) {
-										echo '高校学区	: ';
-										echo $RS_cat_schigh[0]['cat_schigh_name'];
+										for($i = 0; $i < count($RS_cat_schigh); $i++) {
+											echo '高校学区	: ';
+											echo $RS_cat_schigh[0]['cat_schigh_name'];
+										}
 									}
 								?>
 							</td>
@@ -227,29 +260,58 @@
                         </tr>
                         <tr>
                         	<th>土地権利</th>
-                            <td><?php echo $RS_rights[0]['rights_name'];?></td>
+                            <td>
+								<?php
+									for($i = 0; $i < count($RS_rights); $i++) {
+											echo $RS_rights[$i]['rights_name'];
+										}
+								?>
+							</td>
                             <th>地目</th>
-                            <td><?php echo $RS_landcat[0]['landcat_name'];?></td>
+                            <td>
+								<?php
+									for($i = 0; $i < count($RS_landcat); $i++) {
+											echo $RS_landcat[$i]['landcat_name'];
+										}
+								?>
                         </tr>
                         <tr>
                         	<th>都市計画</th>
-                            <td><?php echo $RS_plan[0]['plan_name'];?></td>
+                            <td>
+								<?php
+									for($i = 0; $i < count($RS_plan); $i++) {
+											echo $RS_plan[$i]['plan_name'];
+										}
+								?>
+							</td>
                             <th>用途地域</th>
-                            <td><?php echo $RS_district[0]['dist_name'];?></td>
+                            <td>
+								<?php 
+									for($i = 0; $i < count($RS_district); $i++) {
+										echo $RS_district[$i]['dist_name'];
+									}
+								?>
+							</td>
                         </tr>
                         <tr>
                         	<th>建築確認番号</th>
                             <td><?php echo $RS_item[0]['item_serial'];?></td>
                             <th>取引形態</th>
-                            <td><?php echo $RS_method[0]['meth_name'];?></td>
+                            <td>
+								<?php 
+									for($i = 0; $i < count($RS_method); $i++) {
+										echo $RS_method[$i]['meth_name'];
+									}
+								?>
+							</td>
                         </tr>
                         <tr>
                         	<th>その他制限等</th>
                             <td><?php echo $RS_item[0]['item_restrict'];?></td>
                             <th rowspan="2">地図</th>
                             <td rowspan="2">
-                            	<input type="hidden" id="lat" value="<?php echo $RS_item[0]['x_item_lat']; ?>"/>
-                                <input type="hidden" id="lng" value="<?php echo $RS_item[0]['x_item_lng']; ?>"/>
+                            	<input type="hidden" id="lat" value="<?php echo $lat_lng[0]; ?>"/>
+                                <input type="hidden" id="lng" value="<?php echo $lat_lng[1]; ?>"/>
                                 <input type="hidden" id="zoom" value="<?php echo $RS_item[0]['item_zoom']; ?>"/>
                                 <div class="map-company" id="googleMap" style="width: 90% ;height: 300px; padding: 20px;"></div>
                             </td>

@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+$(document).ready(function () {
     //auto draw chart
     google.charts.setOnLoadCallback(drawChart);
     
@@ -52,7 +52,8 @@
                     max: max,
                     min: min
                 }
-            }
+            },
+            pointSize: 10
         };
         
         // Instantiate and draw our chart, passing in some options.

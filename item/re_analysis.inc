@@ -25,7 +25,7 @@
         <li class="tab_off"><a href="/item/?md=list" title="物件一覧">物件一覧</a></li>
         <li class="tab_off"><a href="/item/?md=regist" title="物件登録">物件登録</a></li>
         <li class="tab_on"><a href="/item/?md=analysis" title="集計・解析">集計・解析</a></li>
-        <li class="tab_off"><a href="/item/?md=analysis_item" title="解析(物件)">解析(物件)</a></li>
+        <li class="tab_off"><a>解析(物件)</a></li>
 
       </ul>
     </div>
@@ -129,7 +129,7 @@
                     	<tr>
                         	<td>期間</td>
                             <td>
-								<input class="inp-cmn" type="date" id="from" value="1970-01-01"/>
+								<input class="inp-cmn" type="date" id="from" value="2000-01-01"/>
 							</td>
                             <td>〜</td>
                             <td>
@@ -143,7 +143,6 @@
                                     <option value="3">物件数推移</option>
                                     <option value="4">平均成約価格推移</option>
                                     <option value="5">平均販売開始価格推移</option>
-                                    <option value="6">新規登録件数推移</option>
                                 </select>
                             </td>
                             <td>

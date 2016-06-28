@@ -4,6 +4,9 @@
 //------------------------------------------------------//
 //debug flag(1=debug)
 $G_is_debug=1;
+
+// Turn off error reporting
+error_reporting(0);
 //------------------------------------------------------//
 //session_start
 $flg_cron = 0;

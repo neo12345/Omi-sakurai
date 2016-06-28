@@ -147,538 +147,585 @@ switch($F_md){
 		get_rs("m_user", "user", "flg_active = 1", "user_sort asc");
 		break;
 
-	case "analysis":
-		$flg_jquery = "1";
-		$flg_analysis = "1";
-		$id_body = "itemlist";
-        $inc = "analysis.inc";
-		
-		/*--Ominext--*/
-		
-        //get city
-		$select = 'count(city_name) AS count_item, city_name, cat_city_name, m_city.city_cd';
-		$table = 'm_cat_city, r_city, m_city, r_item1';
-		$where = 'm_city.city_cd = r_item1.city_cd AND '
-				.'m_cat_city.cat_city_cd = r_city.cat_city_cd AND '
-				.'r_city.city_cd = m_city.city_cd';
-		$groupBy = 'm_city.city_name, m_cat_city.cat_city_name, m_city.city_cd';
-		
-		Omi_get_rs_with_group_by($select, $table, 'city', $where, $groupBy);
-		
-        //get seller
-		$select = 'seller_cd, seller_name';
-		$table = 'm_seller';
-		$where = '';
-		$orderBy = '';
-		
-		Omi_get_rs($select, $table, 'seller', $where, $orderBy);
-		
-        /*--Ominext end--*/
-		
-		break;
+case "analysis":
+    $flg_jquery = "1";
+    $flg_analysis = "1";
+    $id_body = "itemlist";
+    $inc = "analysis.inc";
 
-	case "analysis_item":
-		$flg_jquery = "1";
-		$flg_analysis = "1";
-		$id_body = "itemlist";
-        $inc = "analysis_item.inc";
-		
-        /*--Ominext--*/               		
-        if (!isset($_GET['item_cd'])) {
-            header('Location:/item/');
-            exit;
-        }
-        
-        else { 
-		//get item_cd
-		$item_cd = $_GET['item_cd'];
-		
-			//get item
-            $table = 't_item';
-            $where = 't_item.item_cd = \'' . $item_cd . '\'';
-            $orderBy = '';
-			
-            get_rs($table, 'item', $where, $orderBy);
-            
-			//get history price
-            $select = 't_history.date_regist, m_status.stat_name, t_history.hist_price';//, m_user.user_name';
-            $table = 'r_history, t_history, m_status';//, m_user';
-            $where = 'r_history.item_cd = \'' . $item_cd . '\' AND '
-                    .'r_history.hist_cd = t_history.hist_cd AND '
-                    .'r_history.stat_cd = m_status.stat_cd';
-//                    .'r_history.user_cd = m_user.user_cd';
-            $orderBy = 't_history.date_regist ASC';
-            
-            Omi_get_rs($select, $table, 'history', $where, $orderBy);
-            $count_history = count($RS_history);
-            
-			//get image img
-			$url = 'ftp://ominext:ominext@133.242.15.81/realestate/public_html_admin';
-			
-			if($item_cd < 10) {
-				$folder = '00'.$item_cd;
-			}
-			if($item_cd >= 10 && $item_cd <100) {
-				$folder = '0'.$item_cd;
-			}
-			if($item_cd >= 100)	{
-				$folder = $item_cd;
-			}
-			
-			$link_img_main_s = $url . '/_up/item/' . $folder . '/main_s.jpg';
-			
-			
-			//get cat_item
-			$select = 'r_item1.cat_item_cd';
-			$table = 'r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\'';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'cat_item', $where, $orderBy);
-			
-			//get size detail
-			$table = 't_size_detail, r_item7';
-			$where = 'r_item7.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item7.size_detail_cd = t_size_detail.size_detail_cd';
-			$orderBy = '';
-			
-			get_rs($table, 'size_detail', $where, $orderBy);
-			
-			//get water, sewer, fuel
-			$select = 'water_name';
-			$table =  'm_waterworks, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.water_cd = m_waterworks.water_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'water', $where, $orderBy);
-					//--
-			$select = 'sewer_name';
-			$table =  'm_sewer, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.sewer_cd = m_sewer.sewer_cd';
-			$orderBy = '';
-					
-			Omi_get_rs($select, $table, 'sewer', $where, $orderBy);
-					//--
-			$select = 'fuel_name';
-			$table =  'm_fuel, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.fuel_cd = m_fuel.fuel_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'fuel', $where, $orderBy);
-			
-			//get structure
-			$select = 'struc_name';
-			$table =  'm_structure, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.struc_cd = m_structure.struc_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'structure', $where, $orderBy);
-			
-			//get floor plan
-			$select = 'layout_name';
-			$table =  'm_layout, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.layout_cd = m_layout.layout_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'layout', $where, $orderBy);
-			
-			//get schools
-			$select = 'school_pri_name';
-			$table =  'm_school_primary, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND ' 
-					.'r_item1.school_pri_cd = m_school_primary.school_pri_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'school_pri', $where, $orderBy);
-					//--
-			$select = 'school_jun_name';
-			$table =  'm_school_junior, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.school_jun_cd = m_school_junior.school_jun_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'school_jun', $where, $orderBy);
-					//--
-			$select = 'cat_schigh_name';
-			$table =  'm_cat_schigh, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.cat_schigh_cd = m_cat_schigh.cat_schigh_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'cat_schigh', $where, $orderBy);
-			
-			//get road
-			$select = 'dire_name, road_name, along_size';
-			$table =  'm_road, t_along, m_direction, r_item8';
-			$where = 'r_item8.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item8.road_cd = m_road.road_cd AND '
-					.'r_item8.along_cd = t_along.along_cd AND '
-					.'r_item8.dire_cd = m_direction.dire_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'road', $where, $orderBy);		
-			
-			//get rights
-			$select = 'rights_name';
-			$table =  'm_rights, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.rights_cd = m_rights.rights_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'rights', $where, $orderBy);
-			
-			//get landcat
-			$select = 'landcat_name';
-			$table =  'm_landcat, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.landcat_cd = m_landcat.landcat_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'landcat', $where, $orderBy);
-			
-			//get plan
-			$select = 'plan_name';
-			$table =  'm_plan, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.plan_cd = m_plan.plan_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'plan', $where, $orderBy);
-			
-			//get method
-			$select = 'meth_name';
-			$table =  'm_method, r_item1';
-			$where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item1.med_cd = m_method.meth_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'method', $where, $orderBy);
-			
-			//get district
-			$select = 'dist_name';
-			$table =  'm_district, r_item9';
-			$where = 'r_item9.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item9.dist_cd = m_district.dist_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'district', $where, $orderBy);
-			
-			//get pubtrans
-			$select = 'pubtrans_name';
-			$table =  'm_pubtrans, r_item2';
-			$where = 'r_item2.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item2.pubtrans_cd = m_pubtrans.pubtrans_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'pubtrans', $where, $orderBy);
-			
-			//get stop
-			$select = 'stop_name';
-			$table =  'm_stop, r_item2';
-			$where = 'r_item2.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item2.stop_cd = m_stop.stop_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'stop', $where, $orderBy);
-			
-			//get transway
-			$select = 'transway_name';
-			$table =  'm_transway, r_item2';
-			$where = 'r_item2.item_cd = \'' . $item_cd . '\' AND '
-					.'r_item2.transway_cd = m_transway.transway_cd';
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'transway', $where, $orderBy);
-			
-			//get transtime
-			$select = 'transtime';
-			$table =  'r_item2';
-			$where = 'r_item2.item_cd = \'' . $item_cd . '\'';					
-			$orderBy = '';
-			
-			Omi_get_rs($select, $table, 'transtime', $where, $orderBy);
-			
-        }
-        $count_analysis_item = count($RS_analysis_item);
-        /*--Ominext end--*/
-        break;
-        
-    case "get_history_price":
-        /*--Ominext--*/
-        /*--get history price AJAX--*/
-        
-        /*get item_cd*/
+    /* --Ominext-- */
+
+    //get city
+    $select = 'count(r_item1.item_cd) AS count_item, city_name, cat_city_name, m_city.city_cd';
+    $table = 'm_cat_city, r_city, m_city, r_item1';
+    $where = 'm_city.city_cd = r_item1.city_cd AND '
+        . 'm_cat_city.cat_city_cd = r_city.cat_city_cd AND '
+        . 'r_city.city_cd = m_city.city_cd';
+    $groupBy = 'm_city.city_name, m_cat_city.cat_city_name, m_city.city_cd';
+
+    Omi_get_rs_with_group_by($select, $table, 'city', $where, $groupBy);
+
+    //get seller
+    $select = 'seller_cd, seller_name';
+    $table = 'm_seller';
+    $where = '';
+    $orderBy = '';
+
+    Omi_get_rs($select, $table, 'seller', $where, $orderBy);
+
+    /* --Ominext end-- */
+
+break;
+
+case "analysis_item":
+    $flg_jquery = "1";
+    $flg_analysis = "1";
+    $id_body = "itemlist";
+    $inc = "analysis_item.inc";
+
+    /* --Ominext-- */
+    if (!isset($_GET['item_cd'])) {
+        header('Location:/item/');
+        exit;
+    } else {
+        //get item_cd
         $item_cd = $_GET['item_cd'];
-        
-        /*search db*/
-        if ($item_cd) {
-            $select = 't_item.*, m_status.*, r_history.*, t_history.date_regist AS hist_date_regist, t_history.*';
-            $table = 't_item, r_history, t_history, m_status';
-            $where = 't_item.item_cd = r_history.item_cd AND '
-                . 'r_history.hist_cd = t_history.hist_cd AND '
-                . 'm_status.stat_cd = r_history.stat_cd AND '
-                . 't_item.item_cd = \'' . $item_cd . '\'';
 
-            Omi_get_rs($select, $table, 'history_price', $where, $orderby);
-			
-            for ($i = 0; $i < count($RS_history_price); $i++) {
-                $history_price[] = array(
-                    'date_regist' => $RS_history_price[$i]['hist_date_regist'],
-                    'stat_name' => $RS_history_price[$i]['stat_name'],
-                    'hist_price' => $RS_history_price[$i]['hist_price']
+        //get item
+        $table = 't_item';
+        $where = 't_item.item_cd = \'' . $item_cd . '\'';
+        $orderBy = '';
+
+        get_rs($table, 'item', $where, $orderBy);
+		
+		if($RS_item == null) {
+			header('Location:/item/');
+        	exit;
+		}
+		
+        //get history price
+        $select = 't_history.date_regist, m_status.stat_name, t_history.hist_price, m_user.user_name';
+        $table = 'r_history, t_history, m_status, m_user';
+        $where = 'r_history.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_history.hist_cd = t_history.hist_cd AND '
+            . 'r_history.stat_cd = m_status.stat_cd AND '
+            . 'r_history.user_cd = m_user.user_cd';
+        $orderBy = 't_history.date_regist ASC';
+
+        Omi_get_rs($select, $table, 'history', $where, $orderBy);
+        $count_history = count($RS_history);
+		
+		
+        //get image img
+
+        if ($item_cd < 10) {
+            $folder = '00' . $item_cd;
+        }
+        if ($item_cd >= 10 && $item_cd < 100) {
+            $folder = '0' . $item_cd;
+        }
+        if ($item_cd >= 100) {
+            $folder = $item_cd;
+        }
+
+        $link_img_main_s = '/_up/item/' . $folder . '/main_s.jpg';
+
+
+        //get cat_item
+        $select = 'r_item1.cat_item_cd';
+        $table = 'r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\'';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'cat_item', $where, $orderBy);
+
+        //get size detail
+		//old database (before 27/06)
+        $table = 't_size_detail, r_item7';
+        $where = 'r_item7.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item7.size_detail_cd = t_size_detail.size_detail_cd';
+        $orderBy = '';
+
+        get_rs($table, 'size_detail', $where, $orderBy);
+		
+		//new database (from 27/06)
+				/*$table = 't_size_detail, r_size_detail';
+				$where = 'r_size_detail.item_cd = \'' . $item_cd . '\' AND '
+					. 'r_size_detail.size_detail_cd = t_size_detail.size_detail_cd';
+				$orderBy = '';
+		
+				get_rs($table, 'size_detail', $where, $orderBy);*/
+
+        //get water, sewer, fuel
+        $select = 'water_name';
+        $table = 'm_waterworks, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.water_cd = m_waterworks.water_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'water', $where, $orderBy);
+        //--
+        $select = 'sewer_name';
+        $table = 'm_sewer, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.sewer_cd = m_sewer.sewer_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'sewer', $where, $orderBy);
+        //--
+        $select = 'fuel_name';
+        $table = 'm_fuel, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.fuel_cd = m_fuel.fuel_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'fuel', $where, $orderBy);
+
+        //get structure
+        $select = 'struc_name';
+        $table = 'm_structure, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.struc_cd = m_structure.struc_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'structure', $where, $orderBy);
+
+        //get floor plan
+        $select = 'layout_name';
+        $table = 'm_layout, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.layout_cd = m_layout.layout_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'layout', $where, $orderBy);
+
+        //get schools
+        $select = 'school_pri_name';
+        $table = 'm_school_primary, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.school_pri_cd = m_school_primary.school_pri_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'school_pri', $where, $orderBy);
+        //--
+        $select = 'school_jun_name';
+        $table = 'm_school_junior, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.school_jun_cd = m_school_junior.school_jun_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'school_jun', $where, $orderBy);
+        //--
+        $select = 'cat_schigh_name';
+        $table = 'm_cat_schigh, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.cat_schigh_cd = m_cat_schigh.cat_schigh_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'cat_schigh', $where, $orderBy);
+
+        //get road
+		//old database (before 27/06)
+        $select = 'dire_name, road_name, along_size';
+        $table = 'm_road, t_along, m_direction, r_item8';
+        $where = 'r_item8.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item8.road_cd = m_road.road_cd AND '
+            . 'r_item8.along_cd = t_along.along_cd AND '
+            . 'r_item8.dire_cd = m_direction.dire_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'road', $where, $orderBy);
+		
+		//new database (from 27/06)
+				/*$select = 'dire_name, road_name, along_size';
+				$table = 'm_road, t_along, m_direction, r_along';
+				$where = 'r_along.item_cd = \'' . $item_cd . '\' AND '
+					. 'r_along.road_cd = m_road.road_cd AND '
+					. 'r_along.along_cd = t_along.along_cd AND '
+					. 'r_along.dire_cd = m_direction.dire_cd';
+				$orderBy = '';
+		
+				Omi_get_rs($select, $table, 'road', $where, $orderBy);*/
+
+        //get rights
+        $select = 'rights_name';
+        $table = 'm_rights, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.rights_cd = m_rights.rights_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'rights', $where, $orderBy);
+
+        //get landcat
+        $select = 'landcat_name';
+        $table = 'm_landcat, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.landcat_cd = m_landcat.landcat_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'landcat', $where, $orderBy);
+
+        //get plan
+        $select = 'plan_name';
+        $table = 'm_plan, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.plan_cd = m_plan.plan_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'plan', $where, $orderBy);
+
+        //get method
+        $select = 'meth_name';
+        $table = 'm_method, r_item1';
+        $where = 'r_item1.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item1.meth_cd = m_method.meth_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'method', $where, $orderBy);
+
+        //get district
+		//old datebase (before 27/06)
+        $select = 'dist_name';
+        $table = 'm_district, r_item9';
+        $where = 'r_item9.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item9.dist_cd = m_district.dist_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'district', $where, $orderBy);
+		
+		//new database (from 27/06)
+		/*        $select = 'dist_name';
+				$table = 'm_district, r_district';
+				$where = 'r_district.item_cd = \'' . $item_cd . '\' AND '
+					. 'r_district.dist_cd = m_district.dist_cd';
+				$orderBy = '';
+		
+				Omi_get_rs($select, $table, 'district', $where, $orderBy);*/
+		
+        //get pubtrans
+		//old database (before 27/06)
+        $select = 'pubtrans_name, stop_name, transway_name, transtime';
+        $table = 'm_transway, m_stop, m_pubtrans, r_item2';
+        $where = 'r_item2.item_cd = \'' . $item_cd . '\' AND '
+            . 'r_item2.pubtrans_cd = m_pubtrans.pubtrans_cd AND '
+            . 'r_item2.stop_cd = m_stop.stop_cd AND '
+            . 'r_item2.transway_cd = m_transway.transway_cd';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'pubtrans', $where, $orderBy);
+		
+		//new database (from 27/06)
+				/*$select = 'pubtrans_name, stop_name, transway_name, nearest_time';
+				$table = 'm_transway, m_stop, m_pubtrans, r_nearest, t_nearest, r_stop';
+				$where = 'r_nearest.item_cd = \'' . $item_cd . '\' AND '
+					. 'r_stop.pubtrans_cd = m_pubtrans.pubtrans_cd AND '
+					. 'r_stop.stop_cd = m_stop.stop_cd AND '
+					. 'r_nearest.stop_cd = m_stop.stop_cd AND '
+					. 'r_nearest.nearest_cd = t_nearest.nearest_cd AND '
+					. 'r_nearest.transway_cd = m_transway.transway_cd';
+				$orderBy = '';
+		
+				Omi_get_rs($select, $table, 'pubtrans', $where, $orderBy);*/
+
+        //get latitude, longitude
+        $item_point = $RS_item[0]['item_point'];
+        $item_point = substr($item_point, 1, -1);
+        $lat_lng = explode(',', $item_point);
+    }
+
+    /* --Ominext end-- */
+break;
+
+case "get_history_price":
+    /* --Ominext-- */
+    /* --get history price AJAX-- */
+
+    /* get item_cd */
+    $item_cd = $_GET['item_cd'];
+
+    /* search db */
+    if ($item_cd) {
+        $select = 't_item.*, m_status.*, r_history.*, t_history.date_regist AS hist_date_regist, t_history.*';
+        $table = 't_item, r_history, t_history, m_status';
+        $where = 't_item.item_cd = r_history.item_cd AND '
+            . 'r_history.hist_cd = t_history.hist_cd AND '
+            . 'm_status.stat_cd = r_history.stat_cd AND '
+            . 't_item.item_cd = \'' . $item_cd . '\'';
+        $orderBy = '';
+
+        Omi_get_rs($select, $table, 'history_price', $where, $orderBy);
+
+        //sort by date
+        usort($RS_history_price, function($a, $b) {
+            return $a['hist_date_regist'] > $b['hist_date_regist'];
+        });
+
+        for ($i = 0; $i < count($RS_history_price); $i++) {
+            $history_price[] = array(
+                'date_regist' => $RS_history_price[$i]['hist_date_regist'],
+                'stat_name' => $RS_history_price[$i]['stat_name'],
+                'hist_price' => $RS_history_price[$i]['hist_price']
+            );
+        }
+    } else {
+        $history_price = null;
+    }
+
+    //convert to json
+    $history_price_json = json_encode($history_price);
+    header('Content-type:application/json;charset=utf-8');
+    echo $history_price_json;
+    return 1;
+    /* --Ominext end-- */
+break;
+
+case "get_analysis":
+    /* --Ominext-- */
+    /* --analysis a group item AJAX-- */
+
+    /* validate */
+    if (isset($_POST['from']) && isset($_POST['to'])) {
+        $from = $_POST['from'];
+        $to = $_POST['to'];
+        if ($from > $to) {
+            return 1;
+        }
+    }
+
+    /* search db */
+    $opt = $_POST['select_opt'];
+
+
+    if ($opt == 1) { //count item - soldout
+        $select = 't_item.date_soldout AS date, COUNT(t_item.item_cd) AS count';
+        $table = 't_item, r_item1';
+        $groupBy = 't_item.date_soldout';
+
+        $where = 't_item.item_cd = r_item1.item_cd';
+    } else if ($opt == 2) { //count item - regist
+        $select = 't_item.date_regist AS date, COUNT(t_item.item_cd) AS count';
+        $table = 't_item, r_item1';
+        $groupBy = 't_item.date_regist';
+
+        $where = 't_item.item_cd = r_item1.item_cd';
+    } else if ($opt == 3) { //count item - total
+        $select = 't_item.date_regist AS date, t_item.item_cd';
+        $table = 't_item, r_item1';
+
+        $where = 't_item.item_cd = r_item1.item_cd';
+    } else if ($opt == 4) { //avg price - soldout
+        $select = 't_history.date_regist AS date, SUM(t_history.hist_price) AS sum, COUNT(t_item.item_cd) as count';
+        $table = 't_item, r_item1, r_history, t_history';
+        $groupBy = 't_history.date_regist';
+
+        $where = 't_item.item_cd = r_history.item_cd AND '
+            . 'r_history.hist_cd = t_history.hist_cd AND '
+            . 't_item.item_cd = r_item1.item_cd AND '
+            . 'r_history.stat_cd = \'4\'';
+    } else { //avg price - regist
+        $select = 't_history.date_regist AS date, SUM(t_history.hist_price) AS sum, COUNT(t_item.item_cd) as count';
+        $table = 't_item, r_history, t_history, r_item1';
+        $groupBy = 't_history.date_regist';
+
+        $where = 't_item.item_cd = r_history.item_cd AND '
+            . 'r_history.hist_cd = t_history.hist_cd AND '
+            . 't_item.item_cd = r_item1.item_cd AND '
+            . 'r_history.stat_cd = \'1\'';
+    }
+
+    if (isset($_POST['city'])) {
+        $city = $_POST['city'];
+        $where = $where . ' AND r_item1.city_cd IN (';
+        for ($i = 0; $i < count($city); $i++) {
+            $where = $where . '\'' . $city[$i] . '\', ';
+        }
+        $where = substr($where, 0, -2);
+        $where = $where . ')';
+    }
+
+    if (isset($_POST['cat_item'])) {
+        $cat_item = $_POST['cat_item'];
+        $where = $where . ' AND r_item1.cat_item_cd IN (';
+        for ($i = 0; $i < count($cat_item); $i++) {
+            $where = $where . '\'' . $cat_item[$i] . '\', ';
+        }
+
+        $where = substr($where, 0, -2);
+        $where = $where . ')';
+    }
+
+    if (isset($_POST['condition'])) {
+        $condition = $_POST['condition'];
+        $where = $where . ' AND r_item1.condition_cd IN (';
+        for ($i = 0; $i < count($condition); $i++) {
+            $where = $where . '\'' . $condition[$i] . '\', ';
+        }
+        $where = substr($where, 0, -2);
+        $where = $where . ')';
+    }
+
+    if (isset($_POST['seller'])) {
+        $seller = $_POST['seller'];
+        $where = $where . ' AND r_item1.seller_cd IN (';
+        for ($i = 0; $i < count($seller); $i++) {
+            $where = $where . '\'' . $seller[$i] . '\', ';
+        }
+        $where = substr($where, 0, -2);
+        $where = $where . ')';
+    }
+
+    // count item - soldout
+    if ($opt == 1) {
+        $where = $where . ' AND t_item.date_soldout BETWEEN \'' . $from . '\' AND \'' . $to . '\'';
+        $where = $where . ' AND t_item.flg_soldout = \'1\'';
+        Omi_get_rs_with_group_by($select, $table, 'result', $where, $groupBy);
+    }
+    if ($opt == 2) { //count item - regist
+        $where = $where . ' AND t_item.date_regist BETWEEN \'' . $from . '\' AND \'' . $to . '\'';
+        Omi_get_rs_with_group_by($select, $table, 'result', $where, $groupBy);
+    }
+    if ($opt == 3) { //count item - total
+        //count item from beginning
+        $select1 = 'COUNT (t_item.item_cd) as count';
+        $table1 = 't_item, r_item1';
+        $where1 = $where . ' AND t_item.date_regist < \'' . $from . '\'';
+
+        Omi_get_rs($select1, $table1, 'count', $where1, '');
+
+        //get all item
+        $where = $where . ' AND t_item.date_regist BETWEEN \'' . $from . '\' AND \'' . $to . '\'';
+        $orderBy = 't_item.date_regist ASC';
+        Omi_get_rs($select, $table, 'item', $where, $orderBy);
+    }
+    if ($opt == 4) { //avg price - soldout
+        $where = $where . ' AND t_history.date_regist BETWEEN \'' . $from . '\' AND \'' . $to . '\'';
+        Omi_get_rs_with_group_by($select, $table, 'result', $where, $groupBy);
+    }
+    if ($opt == 5) { //avg price - regist
+        $where = $where . ' AND t_history.date_regist BETWEEN \'' . $from . '\' AND \'' . $to . '\'';
+        Omi_get_rs_with_group_by($select, $table, 'result', $where, $groupBy);
+    }
+
+
+    //get data for google chart
+    //count item - soldout / regist
+    if ($opt <= 2) {
+        $result = array();
+
+        for ($i = 0; $i < count($RS_result); $i++) {
+            $date = date('Y-m-d', strtotime($RS_result[$i]['date']));
+
+            if ($j = array_search($date, array_column($result, 'x_axis'))) {
+                $result[$j]['y_axis'] += $RS_result[$i]['count'];
+            } else {
+                $result[] = array(
+                    'x_axis' => $date,
+                    'y_axis' => $RS_result[$i]['count']
                 );
             }
-        } else {
-            $history_price = null;
         }
-        
-        //convert to json
-        $history_price_json = json_encode($history_price);
-        header('Content-type:application/json;charset=utf-8');
-        echo $history_price_json;
-        return 1;
-        /*--Ominext end--*/
-        break;
-		
-	case "get_analysis":
-        /*--Ominext--*/
-        /*--analysis a group item AJAX--*/
-        
-        /*validate*/
-		if(isset($_POST['from']) && isset($_POST['to'])){
-            $from = $_POST['from'];
-            $to = $_POST['to'];
-            if($from > $to){
-                return 1;
+
+        //sort by date
+        usort($result, function($a, $b) {
+            return $a['x_axis'] > $b['x_axis'];
+        });
+    }
+
+    //count item - total 
+    if ($opt == 3) {
+        //count item from beginning
+        $totalItemFromBegin = (int) $RS_count[0]['count'];
+
+        $result = array();
+
+        //set temp
+        $temp[] = array(
+            'x_axis' => '1970-01-01',
+            'y_axis' => $totalItemFromBegin
+        );
+        $index = 0;
+        //count
+        for ($i = 0; $i < count($RS_item); $i++) {
+            $date = date('Y-m-d', strtotime($RS_item[$i]['date']));
+
+            if ($date > $temp[$index]['x_axis']) {
+                $temp[] = array(
+                    'x_axis' => $date,
+                    'y_axis' => (int) $temp[$index]['y_axis'] + 1,
+                );
+
+                $index++;
+            } else {
+                $temp[$index]['y_axis'] = (int) $temp[$index]['y_axis'] + 1;
             }
         }
-		
-		/*search db*/
-		$opt = $_POST['select_opt'];
-		
-		//count item - soldout
-		if($opt == 1) {
-			$select = 't_item.date_soldout AS date, COUNT(t_item.item_cd) AS count';
-			$table = 't_item, r_item1';
-			$groupBy = 't_item.date_soldout';
-			
-			$where = 't_item.item_cd = r_item1.item_cd';
-		
-		} else if($opt == 2) { //count item - regist
-			$select = 't_item.date_regist AS date, COUNT(t_item.item_cd) AS count';
-			$table = 't_item, r_item1';
-			$groupBy = 't_item.date_regist';
-			
-			$where = 't_item.item_cd = r_item1.item_cd';
-		
-		} else if($opt == 3) { //count item - total
-			$select = 't_item.date_regist AS date, t_item.item_cd';
-			$table = 't_item, r_item1';
-			$groupBy = 't_item.date_regist';
-			
-			$where = 't_item.item_cd = r_item1.item_cd';
-			
-		} else if($opt == 4) { //avg price - sold
-			$select = 't_history.date_regist AS date, AVG(t_item.item_price) AS avg';
-			$table = 't_item, r_history, t_history, r_item1';
-			$groupBy = 't_history.date_regist';
-			
-			$where = 't_item.item_cd = r_history.item_cd AND '
-				.'r_history.hist_cd = t_history.hist_cd AND '
-				.'t_item.item_cd = r_item1.item_cd';
-			
-		} else { //avg price - regist
-			$select = 't_history.date_regist AS date, AVG(t_item.item_price) AS avg';
-			$table = 't_item, r_history, t_history, r_item1';
-			$groupBy = 't_history.date_regist';
-			
-			$where = 't_item.item_cd = r_history.item_cd AND '
-				.'r_history.hist_cd = t_history.hist_cd AND '
-				.'t_item.item_cd = r_item1.item_cd';
-		}	
-				
-		if(isset($_POST['city'])) {
-			$city = $_POST['city'];
-			$where = $where . ' AND r_item1.city_cd IN (';
-			for ($i = 0 ;$i < count($city); $i++) {
-				$where = $where . '\'' . $city[$i] . '\', ';
-			}
-			$where =substr($where, 0, -2);
-			$where = $where . ')';
-		}
-		
-		if(isset($_POST['cat_item'])) {
-			$cat_item = $_POST['cat_item'];
-			$where = $where . ' AND r_item1.cat_item_cd IN (';
-			for ($i = 0 ;$i < count($cat_item); $i++) {
-				$where = $where . '\'' . $cat_item[$i] . '\', ';
-			}
-			$where =substr($where, 0, -2);
-			$where = $where . ')';
-		}
-		
-		if(isset($_POST['condition'])) {
-			$condition = $_POST['condition'];
-			$where = $where . ' AND r_item1.condition_cd IN (';
-			for ($i = 0 ;$i < count($condition); $i++) {
-				$where = $where . '\'' . $condition[$i] . '\', ';
-			}
-			$where =substr($where, 0, -2);
-			$where = $where . ')';
-		}
-		
-		if(isset($_POST['seller'])) {
-			$seller = $_POST['seller'];
-			$where = $where . ' AND r_item1.seller_cd IN (';
-			for ($i = 0 ; $i < count($seller); $i++) {
-				$where = $where . '\'' . $seller[$i] . '\', ';
-			}
-			$where =substr($where, 0, -2);
-			$where = $where . ')';
-		}
-			
-		//$where = $where . ' AND t_history.date_regist BETWEEN \''.$from.'\' AND \''.$to.'\'';
-		
-		if($opt == 1) {
-			$where = $where . ' AND t_item.date_soldout BETWEEN \''.$from.'\' AND \''.$to.'\'';
-			$where = $where . ' AND t_item.flg_soldout = \'1\'';
-			Omi_get_rs_with_group_by($select, $table, 'result', $where, $groupBy);
-		}
-		if($opt == 2) {
-			$where = $where . ' AND t_item.date_regist BETWEEN \''.$from.'\' AND \''.$to.'\'';
-			Omi_get_rs_with_group_by($select, $table, 'result', $where, $groupBy);
-		}
-		if($opt == 3) {
-			//count item from beginning
-			$select1 = 'COUNT (t_item.item_cd) as count';
-			$table1 = 't_item, r_item1';
-			$where1 = $where . ' AND t_item.date_regist < \''. $from .'\'';
-			
-			Omi_get_rs($select1, $table1, 'count', $where1, '');
-			
-			//get all item
-			$where = $where . ' AND t_item.date_regist BETWEEN \''.$from.'\' AND \''.$to.'\'';
-			$orderBy = 't_item.date_regist ASC';
-			Omi_get_rs($select, $table, 'item', $where, $orderBy);
-		}		
-		if($opt == 4) {
-			Omi_get_rs_with_group_by($select, $table, 'result', $where, $groupBy);
-		}
-		if($opt == 5) {
-			Omi_get_rs_with_group_by($select, $table, 'result', $where, $groupBy);
-		}
-		
-		
-		//get data google chart
-		//count item - soldout / regist
-		if($opt <= 2) {		
-			$result = array();
-			
-			for ($i = 0; $i < count($RS_result); $i++) {	
-				$date = date('Y-m-d', strtotime($RS_result[$i]['date']));
-				
-				if ($j = array_search($date, array_column($result, 'x_axis'))) {
-					$result[$j]['y_axis'] +=  $RS_result[$i]['count'];
-				} else {
-					$result[] = array(
-									'x_axis' => $date,
-									'y_axis' => $RS_result[$i]['count']
-								);
-				}
-			}
-			
-			//sort by date
-			
-			usort($result, function($a, $b) {
-    			return $a['x_axis'] > $b['x_axis'];
-			});
-			
-		}
-		
-		//count item - total 
-		if ($opt == 3) {
-			//count item from beginning
-			$totalItemFromBegin = (int)$RS_count[0]['count'];
-			
-			$result = array();
-			
-			//set temp
-			$temp[] = array(
-							'x_axis' => '1970-01-01',
-							'y_axis' => $totalItemFromBegin
-						);
-			$index = 0;
-			
-			for($i = 0; $i < count($RS_item); $i++) {
-				$date = date('Y-m-d', strtotime($RS_item[$i]['date']));
 
-				if($date > $temp[$index]['x_axis']) {
-					$temp[] = array(
-									'x_axis' => $date,
-									'y_axis' => (int)$temp[$index]['y_axis'] + 1,
-								);
-								
-					$index++;
-				}
-				if($date = $temp[$index]['x_axis']) {
-					$temp[$index]['y_axis'] = (int)$temp[$index]['y_axis'] + 1;
-				}
-			}
-			//remove temp
-			unset($temp[0]);
-			
-			for ($i = 1; $i < count($temp); $i++) {
-				$result[] = array(
-								'x_axis' => $temp[$i]['x_axis'],
-								'y_axis' => $temp[$i]['y_axis'],
-							);
-			}
-			
-			$RS_result = array(
-							'temp' => '1'
-							);
-		}
-		
-		//avg price - soldout / regist
-		if ($opt >= 4) {
-			$result = array();
-			
-			for ($i = 0; $i < count($RS_result); $i++) {
-				$date = date('Y-m-d', strtotime($RS_result[$i]['date']));
-				
-				if ($j = array_search($date, array_column($result, 'x_axis'))) {
-					$result[$j]['y_axis'] +=  $RS_result[$i]['avg'];
-				} else {
-					$result[] = array(
-								'x_axis' => $date,
-								'y_axis' => $RS_result[$i]['avg']
-								);
-				}
-				
-			}
-			
-			//sort by date
-			usort($result, function($a, $b) {
-    			return $a['x_axis'] - $b['x_axis'];
-			});
-		}
-		if(count($RS_result) == 0) {
-			$result = null;
-		}
-        
-        
-        //convert to json
-        $result_json = json_encode($result);
-        header('Content-type:application/json;charset=utf-8');
-        echo $result_json;
-        return 1;
-        /*--Ominext end--*/
-        break;    
+        //don't get first item			
+        for ($i = 1; $i < count($temp); $i++) {
+            $result[] = array(
+                'x_axis' => $temp[$i]['x_axis'],
+                'y_axis' => $temp[$i]['y_axis'],
+            );
+        }
+
+        $RS_result = array(
+            'temp' => '1'
+        );
+    }
+
+    //avg price - soldout / regist
+    if ($opt >= 4) {
+
+        //dummy data
+        $temp[] = array(
+            'date' => '0000-00-00',
+            'sum' => '0',
+            'count' => '0'
+        );
+
+        //count item and sum price
+        for ($i = 0; $i < count($RS_result); $i++) {
+            $date = date('Y-m-d', strtotime($RS_result[$i]['date']));
+
+            if ($j = array_search($date, array_column($temp, 'date'))) {
+                $temp[$j]['sum'] += $RS_result[$i]['sum'];
+                $temp[$j]['count'] += $RS_result[$i]['count'];
+            } else {
+                $temp[] = array(
+                    'date' => $date,
+                    'sum' => $RS_result[$i]['sum'],
+                    'count' => $RS_result[$i]['count']
+                );
+            }
+        }
+
+        //sort by date
+        usort($temp, function($a, $b) {
+            return $a['date'] > $b['date'];
+        });
+
+        //get avg price per day
+        //dont get dummy data
+        for ($i = 1; $i < count($temp); $i++) {
+            $result[] = array(
+                'x_axis' => $temp[$i]['date'],
+                'y_axis' => $temp[$i]['sum'] / $temp[$i]['count']
+            );
+        }
+    }
+    if (count($RS_result) == 0) {
+        $result = null;
+    }
+
+
+    //convert to json
+    $result_json = json_encode($result);
+    header('Content-type:application/json;charset=utf-8');
+    echo $result_json;
+    return 1;
+    /* --Ominext end-- */
+break;
+    
 
 	default :
 		break;
