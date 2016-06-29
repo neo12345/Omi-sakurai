@@ -238,6 +238,11 @@ case "analysis_item":
         $orderBy = '';
 
         Omi_get_rs($select, $table, 'cat_item', $where, $orderBy);
+		
+		//get commission, discount
+		$commission = cal_commission($RS_item[0]['item_price'], "");
+		$commission = (float)$commission * 10000;
+		$discount = $commission * $RS_item[0]['item_discount'] / 100;
 
         //get size detail
 		//old database (before 27/06)

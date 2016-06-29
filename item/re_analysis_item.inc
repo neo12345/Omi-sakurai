@@ -68,8 +68,19 @@
                             <td colspan="3"><?php echo $RS_item[0]['item_price'];?>万円（税込）</td>
                         </tr>
                         <tr>
-                        	<th>仲介手数料</th>phi moi gioi
-                            <td colspan="3">839,160円 → 419,580円（仲介手数料上限から50%OFF）419,580円OFF</td>
+                        	<th>仲介手数料</th>
+                            <td colspan="3">
+								<?php 
+									echo number_format($commission); 
+									echo '円 →';
+									echo number_format($commission - $discount);
+									echo '円（仲介手数料上限から';
+									echo $RS_item[0]['item_discount'];
+									echo '%OFF）';
+									echo number_format($discount);
+									echo '円OFF';
+								?>
+							</td>
                         </tr>
                         <tr>
                         	<th>土地面積</th>
