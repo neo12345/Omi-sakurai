@@ -6,7 +6,7 @@
 $G_is_debug=1;
 
 // Turn off error reporting
-//error_reporting(0);
+error_reporting(0);
 
 //------------------------------------------------------//
 //session_start
